@@ -21,12 +21,6 @@ export default function App() {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleSearch = async (image) => {
-    if (!image.trim()) {
-      //setError("Please enter a search term.");
-      showToast("Please enter a search term.", "error");
-      return;
-    }
-
     setSearchImage(image);
     setPage(1);
     setArticles([]);
@@ -43,7 +37,6 @@ export default function App() {
         const data = await unSplash(searchImage, page);
 
         if (data.results.length === 0) {
-          //setError("No images found for this search term.");
           showToast("No images found for this search term.", "info");
         } else {
           setArticles((prevArticles) => {
@@ -51,7 +44,6 @@ export default function App() {
           });
         }
       } catch (error) {
-        //setError("Something went wrong. Please try again later.");
         showToast("Something went wrong. Please try again later.", "error");
       } finally {
         setLoading(false);

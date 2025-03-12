@@ -1,5 +1,6 @@
 import { Form, Field, Formik } from "formik";
 import styles from "./SearchBar.module.css";
+import { showToast } from "../ToastProvider/ToastProvider";
 
 export default function SearchBar({ onSearch }) {
   return (
@@ -9,8 +10,12 @@ export default function SearchBar({ onSearch }) {
           image: "",
         }}
         onSubmit={(values, actions) => {
-          onSearch(values.image);
-          actions.resetForm();
+          if (!values.image.trim()) {
+            showToast("Please enter a search term.", "error");
+          } else {
+            onSearch(values.image);
+            actions.resetForm();
+          }
         }}
       >
         <Form className={styles.form}>
