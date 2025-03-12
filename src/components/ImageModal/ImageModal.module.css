@@ -10,6 +10,9 @@
   align-items: center;
   z-index: 1000;
   padding: 20px;
+  overflow: hidden;
+  overflow-y: auto;
+  transition: opacity 0.3s;
 }
 
 .modalContent {
@@ -25,6 +28,7 @@
   align-items: center;
   padding: 20px;
   box-sizing: border-box;
+  transition: transform 0.3s;
 }
 
 .modalCloseButton {
@@ -41,7 +45,7 @@
 }
 
 .modalCloseButton:hover {
-  background-color: #f0f0f0;
+  background-color: #6e6e6e;
 }
 
 .modalImage {

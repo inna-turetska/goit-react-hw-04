@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { showToast } from "./components/ToastProvider/ToastProvider";
 import SearchBar from "./components/SearchBar/SearchBar.jsx";
 import { unSplash } from "./unSplash";
 import ImageGallery from "./components/ImageGallery/ImageGallery.jsx";
@@ -6,7 +7,8 @@ import Spinner from "./components/Loader/Loader.jsx";
 import LoadMoreButton from "./components/LoadMoreBtn/LoadMoreBtn.jsx";
 import ImageModal from "./components/ImageModal/ImageModal.jsx";
 import ErrorMessage from "./components/ErrorMessage/ErrorMessage.jsx";
-
+import ToastProvider from "./components/ToastProvider/ToastProvider.jsx";
+import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 export default function App() {
@@ -20,7 +22,8 @@ export default function App() {
 
   const handleSearch = async (image) => {
     if (!image.trim()) {
-      setError("Please enter a search term.");
+      //setError("Please enter a search term.");
+      showToast("Please enter a search term.", "error");
       return;
     }
 
@@ -40,38 +43,22 @@ export default function App() {
         const data = await unSplash(searchImage, page);
 
         if (data.results.length === 0) {
-          setError("No images found for this search term.");
+          //setError("No images found for this search term.");
+          showToast("No images found for this search term.", "info");
         } else {
           setArticles((prevArticles) => {
             return [...prevArticles, ...data.results];
           });
         }
       } catch (error) {
-        setError("Something went wrong. Please try again later.");
+        //setError("Something went wrong. Please try again later.");
+        showToast("Something went wrong. Please try again later.", "error");
       } finally {
         setLoading(false);
       }
     }
     getImage();
   }, [page, searchImage]);
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        closeModal();
-      }
-    };
-
-    if (modalIsOpen) {
-      window.addEventListener("keydown", handleKeyDown);
-    } else {
-      window.removeEventListener("keydown", handleKeyDown);
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [modalIsOpen]);
 
   const openModal = (image) => {
     setSelectedImage(image);
@@ -92,9 +79,10 @@ export default function App() {
       {articles.length > 0 && (
         <LoadMoreButton onClick={() => setPage(page + 1)} />
       )}
-      <ImageModal isOpen={modalIsOpen} onRequestClose={closeModal}>
+      <ImageModal isOpen={modalIsOpen} onClose={closeModal}>
         {selectedImage ? selectedImage.urls.regular : ""}
       </ImageModal>
+      <ToastProvider />
     </>
   );
 }

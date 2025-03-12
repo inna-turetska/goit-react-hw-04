@@ -1,30 +1,25 @@
 import React from "react";
-import PropTypes from "prop-types";
+import Modal from "react-modal";
 import styles from "./ImageModal.module.css";
 
-const ImageModal = ({ isOpen, onRequestClose, children }) => {
-  if (!isOpen) {
-    return null;
-  }
-
+export const ImageModal = ({ isOpen, onClose, children }) => {
   return (
-    <div className={styles.modalOverlay} onClick={onRequestClose}>
-      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-        <button onClick={onRequestClose} className={styles.modalCloseButton}>
-          Close
-        </button>
-        <div className={styles.modalImage}>
+    <Modal
+      className={styles.modalContent}
+      overlayClassName={styles.modalOverlay}
+      isOpen={isOpen}
+      ariaHideApp={false}
+    >
+      <button className={styles.modalCloseButton} onClick={() => onClose()}>
+        Close
+      </button>
+      <div className={styles.modalImage}>
+        {children && (
           <img src={children} alt="Modal Content" className={styles.modalImg} />
-        </div>
+        )}
       </div>
-    </div>
+    </Modal>
   );
-};
-
-ImageModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onRequestClose: PropTypes.func.isRequired,
-  children: PropTypes.node,
 };
 
 export default ImageModal;
