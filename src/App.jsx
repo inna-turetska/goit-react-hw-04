@@ -12,13 +12,18 @@ import "./App.css";
 export default function App() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [searchImage, setSearchImage] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleSearch = async (image) => {
+    if (!image.trim()) {
+      setError("Please enter a search term.");
+      return;
+    }
+
     setSearchImage(image);
     setPage(1);
     setArticles([]);
@@ -30,14 +35,19 @@ export default function App() {
     }
     async function getImage() {
       setLoading(true);
-      setError(false);
+      setError(null);
       try {
         const data = await unSplash(searchImage, page);
-        setArticles((prevArticles) => {
-          return [...prevArticles, ...data.results];
-        });
+
+        if (data.results.length === 0) {
+          setError("No images found for this search term.");
+        } else {
+          setArticles((prevArticles) => {
+            return [...prevArticles, ...data.results];
+          });
+        }
       } catch (error) {
-        setError(true);
+        setError("Something went wrong. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -77,7 +87,7 @@ export default function App() {
     <>
       <SearchBar onSearch={handleSearch} />
       {loading && <Spinner loading={loading} />}
-      {error && <ErrorMessage />}
+      {error && <ErrorMessage message={error} />}
       <ImageGallery items={articles} onImageClick={openModal} />
       {articles.length > 0 && (
         <LoadMoreButton onClick={() => setPage(page + 1)} />

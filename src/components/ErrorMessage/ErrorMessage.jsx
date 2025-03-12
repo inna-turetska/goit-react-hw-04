@@ -1,7 +1,7 @@
-const ErrorMessage = () => {
+const ErrorMessage = ({ message }) => {
   return (
     <>
-      <p>Whoops, something went wrong! Please try reloading this page!</p>
+      <p>{message}</p>
     </>
   );
 };
